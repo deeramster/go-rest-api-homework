@@ -47,10 +47,9 @@ func getTasks(w http.ResponseWriter, r *http.Request) {
 	}
 	err := json.NewEncoder(w).Encode(tasksList)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 }
 
 func addTask(w http.ResponseWriter, r *http.Request) {
@@ -77,8 +76,11 @@ func getTask(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Bad Request", http.StatusBadRequest)
 		return
 	}
-	json.NewEncoder(w).Encode(task)
-	w.WriteHeader(http.StatusOK)
+	err := json.NewEncoder(w).Encode(task)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
 }
 
 func deleteTask(w http.ResponseWriter, r *http.Request) {
@@ -90,7 +92,6 @@ func deleteTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	delete(tasks, id)
-	w.WriteHeader(http.StatusOK)
 }
 
 func main() {
